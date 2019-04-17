@@ -58,4 +58,17 @@ public class UserController {
 
         return new ResponseEntity<>(user, headers, HttpStatus.CREATED);
     }
+
+    @RequestMapping(value = "/{userId}", method = RequestMethod.DELETE)
+    public ResponseEntity<User> deleteUser(@PathVariable Long userId) {
+        // Delete user if exists
+        User user = applicationController.deleteUser(userId);
+        if (user == null) return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+
+        // Generate response
+        HttpHeaders headers = new HttpHeaders();
+        headers.setLocation(ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(user.getId()).toUri());
+
+        return new ResponseEntity<>(user, headers, HttpStatus.OK);
+    }
 }

@@ -99,4 +99,20 @@ public class PresentationApplicationTests {
                 .andExpect(status().isCreated());
     }
 
+    @Test
+    public void shouldReachDeleteUserEndpoint() throws Exception {
+
+        when(userMapper.toUser(Mockito.any(UserRequest.class))).thenReturn(user);
+        when(applicationController.deleteUser(Mockito.any(Long.class))).thenReturn(user);
+
+        ObjectMapper mapper = new ObjectMapper();
+        String json = mapper.writeValueAsString(request);
+
+        mockMvc.perform(delete("/user/1")
+                .content(json)
+                .characterEncoding("UTF-8")
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+    }
+
 }

@@ -24,4 +24,8 @@ public class ApplicationController {
     public User updateUser(Long userId, User user) {
         return userDBService.update(userId, user);
     }
+
+    public User deleteUser(Long userId) {
+        return userDBService.delete(userId);
+    }
 }

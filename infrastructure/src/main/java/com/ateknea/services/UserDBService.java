@@ -53,5 +53,18 @@ public class UserDBService {
         entity.setId(dbEntity.getId());
         return entityMapper.toUser(repository.save(entity));
     }
+
+
+    public User delete(Long userId) {
+        try {
+            // Get current database entity
+            UserEntity dbEntity = repository.findById(userId).get();
+            // Delete
+            repository.delete(dbEntity);
+            return entityMapper.toUser(dbEntity);
+        } catch (NoSuchElementException e) {
+            return null;
+        }
+    }
 }
 
