@@ -1,6 +1,7 @@
 package com.ateknea.controllers;
 
 import com.ateknea.dto.UserRequest;
+import com.ateknea.exceptions.BadRequestException;
 import com.ateknea.mappers.UserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -34,29 +35,40 @@ public class UserController {
     }
 
     @RequestMapping(method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<User> createUser(@RequestBody UserRequest request) {
-        // Create user
-        User user = applicationController.createUser(userMapper.toUser(request));
-        if (user == null) return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    public ResponseEntity<Object> createUser(@RequestBody UserRequest request) {
 
-        // Generate response
-        HttpHeaders headers = new HttpHeaders();
-        headers.setLocation(ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(user.getId()).toUri());
+        try {
+            // Create user
+            User user = applicationController.createUser(userMapper.toUser(request));
+            if (user == null) return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 
-        return new ResponseEntity<>(user, headers, HttpStatus.CREATED);
+            // Generate response
+            HttpHeaders headers = new HttpHeaders();
+            headers.setLocation(ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(user.getId()).toUri());
+
+            return new ResponseEntity<>(user, headers, HttpStatus.CREATED);
+        } catch (BadRequestException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+
     }
 
     @RequestMapping(value = "/{userId}", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<User> updateUSer(@RequestBody UserRequest request, @PathVariable Long userId) {
-        // Update user if exists
-        User user = applicationController.updateUser(userId, userMapper.toUser(request));
-        if (user == null) return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    public ResponseEntity<Object> updateUSer(@RequestBody UserRequest request, @PathVariable Long userId) {
 
-        // Generate response
-        HttpHeaders headers = new HttpHeaders();
-        headers.setLocation(ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(user.getId()).toUri());
+        try {
+            // Update user if exists
+            User user = applicationController.updateUser(userId, userMapper.toUser(request));
+            if (user == null) return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 
-        return new ResponseEntity<>(user, headers, HttpStatus.CREATED);
+            // Generate response
+            HttpHeaders headers = new HttpHeaders();
+            headers.setLocation(ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(user.getId()).toUri());
+
+            return new ResponseEntity<>(user, headers, HttpStatus.CREATED);
+        } catch (BadRequestException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
     }
 
     @RequestMapping(value = "/{userId}", method = RequestMethod.DELETE)
