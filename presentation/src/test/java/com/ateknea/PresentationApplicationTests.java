@@ -20,8 +20,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
@@ -78,6 +77,22 @@ public class PresentationApplicationTests {
         String json = mapper.writeValueAsString(request);
 
         mockMvc.perform(post("/user")
+                .content(json)
+                .characterEncoding("UTF-8")
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isCreated());
+    }
+
+    @Test
+    public void shouldReachUpdateUserEndpoint() throws Exception {
+
+        when(userMapper.toUser(Mockito.any(UserRequest.class))).thenReturn(user);
+        when(applicationController.updateUser(Mockito.any(Long.class), Mockito.any(User.class))).thenReturn(user);
+
+        ObjectMapper mapper = new ObjectMapper();
+        String json = mapper.writeValueAsString(request);
+
+        mockMvc.perform(put("/user/1")
                 .content(json)
                 .characterEncoding("UTF-8")
                 .contentType(MediaType.APPLICATION_JSON))

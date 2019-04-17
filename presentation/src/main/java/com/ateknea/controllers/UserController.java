@@ -35,12 +35,27 @@ public class UserController {
 
     @RequestMapping(method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<User> createUser(@RequestBody UserRequest request) {
-        User u =userMapper.toUser(request);
-        User user = applicationController.createUser(u);
+        // Create user
+        User user = applicationController.createUser(userMapper.toUser(request));
         if (user == null) return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+
         // Generate response
         HttpHeaders headers = new HttpHeaders();
         headers.setLocation(ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(user.getId()).toUri());
+
+        return new ResponseEntity<>(user, headers, HttpStatus.CREATED);
+    }
+
+    @RequestMapping(value = "/{userId}", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<User> updateUSer(@RequestBody UserRequest request, @PathVariable Long userId) {
+        // Update user if exists
+        User user = applicationController.updateUser(userId, userMapper.toUser(request));
+        if (user == null) return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+
+        // Generate response
+        HttpHeaders headers = new HttpHeaders();
+        headers.setLocation(ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(user.getId()).toUri());
+
         return new ResponseEntity<>(user, headers, HttpStatus.CREATED);
     }
 }

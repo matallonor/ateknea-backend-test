@@ -20,4 +20,8 @@ public class ApplicationController {
     public User createUser(User user) {
         return userDBService.create(user);
     }
+
+    public User updateUser(Long userId, User user) {
+        return userDBService.update(userId, user);
+    }
 }

@@ -13,4 +13,5 @@ public interface UserEntityMapper {
 
     List<User> toUsersList(List<UserEntity> list);
 
+    User toUser(UserEntity entity);
 }
