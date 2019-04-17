@@ -17,4 +17,7 @@ public class ApplicationController {
         return userDBService.getAll();
     }
 
+    public User createUser(User user) {
+        return userDBService.create(user);
+    }
 }

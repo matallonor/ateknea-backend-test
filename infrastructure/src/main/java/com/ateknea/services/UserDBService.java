@@ -1,6 +1,7 @@
 package com.ateknea.services;
 
 import com.ateknea.entities.User;
+import com.ateknea.entities.UserEntity;
 import com.ateknea.mappers.UserEntityMapper;
 import com.ateknea.repositories.UserJpaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,13 +22,12 @@ public class UserDBService {
         return entityMapper.toUsersList(repository.findAll());
     }
 
-
-    /*public Long save(User user) {
+    public User create(User user) {
         UserEntity entity = entityMapper.toEntity(user);
         repository.save(entity);
         user.setId(entity.getId());
-        return entity.getId();
-    }*/
+        return user;
+    }
 
 }
 
