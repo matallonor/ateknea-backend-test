@@ -18,6 +18,10 @@ public class ApplicationController {
         return userDBService.getAll();
     }
 
+    public User getUser(Long userId) {
+        return userDBService.getById(userId);
+    }
+
     public User createUser(User user) throws BadRequestException {
         if (isValid(user)) {
             return userDBService.create(user);

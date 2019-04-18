@@ -19,6 +19,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.GET;
 
 
 @RestController
+@CrossOrigin(origins = "*")
 @RequestMapping("/user")
 public class UserController {
 
@@ -28,10 +29,23 @@ public class UserController {
     @Autowired
     private UserMapper userMapper;
 
-    @RequestMapping(method = GET)
+    @RequestMapping(path = "/list", method = GET)
     public ResponseEntity<List<User>> getUsers() {
         List<User> users = applicationController.getUsers();
         return new ResponseEntity<>(users, HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/{userId}", method = RequestMethod.GET)
+    public ResponseEntity<Object> getUser(@PathVariable Long userId) {
+        // Get user if exists
+        User user = applicationController.getUser(userId);
+        if (user == null) return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+
+        // Generate response
+        HttpHeaders headers = new HttpHeaders();
+        headers.setLocation(ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(user.getId()).toUri());
+
+        return new ResponseEntity<>(user, headers, HttpStatus.OK);
     }
 
     @RequestMapping(method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
